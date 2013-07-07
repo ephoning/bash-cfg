@@ -4,9 +4,6 @@
 #
 # test list utility functions
 #
-# change log
-# ----------
-# v1.0         initial version
 #
 # author: ephoning@gmail.com
 #
@@ -30,6 +27,8 @@ expect "unlist $LIST3" "[ x ] y z"
 
 echo ===== cons =====
 expect "cons a $LIST2" "[ a b c d ]"
+expect "cons $LIST1 $LIST2" "[ [ a b c ] b c d ]"
+
 
 echo ===== consEnd =====
 expect "consEnd a $LIST2" "[ b c d a ]"
@@ -47,6 +46,7 @@ expect "head $LIST4" "[ [ x ] ]"
 echo ===== tail =====
 expect "tail $LIST1" "[ b c ]"
 expect "tail $LIST4" "[ [ y z ] a b c ]"
+expect "tail [ a ]" "[ ]"
 
 echo ===== isList =====
 expect "isList $LIST1" true
@@ -126,5 +126,8 @@ expect "foldLeft concatwithdash . [ a b c ]" "a-b-c"
 
 function sum { echo $(($1 + $2)); }
 expect "foldLeft sum 0 [ 1 2 3 ]" "6"
+
+echo ===== splitIntoPairs =====
+expect "splitIntoPairs [ a b c d e f ]" "[ [ a b ] [ c d ] [ e f ] ]"
 
 testReport

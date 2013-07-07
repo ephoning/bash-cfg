@@ -4,9 +4,6 @@
 #
 # test list utility functions
 #
-# change log
-# ----------
-# v1.0         initial version
 #
 # author: ephoning@gmail.com
 #
@@ -35,6 +32,14 @@ expect "_kvmGetBasic test [ d e f ]"    "[ foo bar baz ]"
 expect "_kvmGetBasic test [ x y z ]"    "[ @ a b c ]"
 expect "_kvmGetBasic test [ u v w ]"    "[ [ @ a b c ] [ @ d e f ] ]"
 
+kvmPut test [ x a ] foo
+kvmPut test [ x b ] bar
+kvmPut test [ x c ] baz
+kvmPut test [ y a ] foobar
+expect "_kvmGetBasic test [ x * ]"    "[ foo bar baz ]"
+expect "_kvmGetBasic test [ * a ]"    "[ foo foobar ]"
+expect "_kvmGetBasic test [ * b ]"    "bar"
+
 echo "===== _kvmGetResortToDefault ====="
 expect "_kvmGetResortToDefault test [ a b c ]"    "foo"
 expect "_kvmGetResortToDefault test [ x b c ]"    "foobar"
@@ -53,5 +58,8 @@ expect "_kvmGetFollowRefs test [ q ]"        "[ foobar [ foo bar baz ] [ a b c ]
 echo "===== kvmGet ====="
 expect "kvmGet test [ m n o ]"    "foobar"
 expect "kvmGet test [ q ]"        "[ foobar [ foo bar baz ] [ a b c ] foo ]"
+
+echo "===== commaSeparate ==="
+expect "commaSeparate [ foo bar baz ]" "foo,bar,baz"
 
 testReport
