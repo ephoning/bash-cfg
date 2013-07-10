@@ -43,9 +43,7 @@ function kvmPut {
 # args: <k-v map name> [ <key part 1> ... <key part N> ]
 #
 function kvmGet {
-    set -f
     local RESULT=`_kvmGetFollowRefs $*`  # supports ref following and fall back to defaults
-    set +f
     echo $RESULT
 }
 
@@ -60,16 +58,10 @@ function _kvmGetBasic {
     local KEY_PART_LIST=`nth 1 "$ARG_LIST"`
     # note: use composed key to allow for easy retrieval via 'egrep'
     local KEY=`kvmComposeKey "$KEY_PART_LIST"`
-
-    #echo "key: $KEY ---"
-
     local FOUND=`egrep "^$KEY " $BASE_KV_MAP_NAME.$KV_MAP_NAME`
     local FOUND_LIST=`list "$FOUND"`
     local KV_PAIR_LIST=`splitIntoPairs $FOUND_LIST`
     local VALUES_LIST=`map [ last @ ] $KV_PAIR_LIST`
-
-    #echo "vals list: $VALUES_LIST ---"
-
     if [[ `length $VALUES_LIST` -eq 0 ]]; then
 	echo ""
     elif [[ `length $VALUES_LIST` -eq 1 ]]; then
@@ -174,7 +166,7 @@ function _concatWith {
     local SECOND=$2
     local JOIN=$3
     if [[ "$FIRST" == "%nil%" ]]; then
-	echo $SECOND
+	echo "$SECOND"
     else
 	echo "$FIRST$JOIN$SECOND"
     fi
