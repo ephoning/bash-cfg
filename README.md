@@ -123,7 +123,7 @@ Then:
 
  `$ kvmGet my-cfg [ ? a ]     -> [ foo foobar ]`
 
-*Note: we use '?' as wildcard instead of '\*' to avoid having to disable standard bash wildcard expansion (e.g., per 'set -f') in scripts using 'kvmGet'*
+*Note: we use '?' as wildcard instead of an asterisk to avoid having to disable standard bash wildcard expansion (e.g., per 'set -f') in scripts using 'kvmGet'*
 
 Implementation Details
 ----------------------
