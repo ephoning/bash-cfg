@@ -12,7 +12,7 @@ Features
 * single and "composite" (list / nested list) values
 * values can be 'key refererences', which get resolved in turn to arrive at 'final' (non-reference) values
 * resort to 'default' value if no value is found for a key by "truncation" of the provided initial key; i.e., try "parent" key (for example, if no value found for key 'a-b-c', try 'b-c', and finally try 'c')
-* fetch one or more values using wildcard key part(s)
+* fetch one or more values using wildcard (?) key part(s)
 
 Storage
 -------
@@ -117,11 +117,13 @@ Assuming:
 
 Then:
 
- `$ kvmGet my-cfg [ x * ]     -> [ foo bar baz ]`
+ `$ kvmGet my-cfg [ x ? ]     -> [ foo bar baz ]`
 
- `$ kvmGet my-cfg [ y * ]     -> foobar`
+ `$ kvmGet my-cfg [ y ? ]     -> foobar`
 
- `$ kvmGet my-cfg [ * a ]     -> [ foo foobar ]`
+ `$ kvmGet my-cfg [ ? a ]     -> [ foo foobar ]`
+
+*Note: we use '?' as wildcard instead of '\*' to avoid having to disable standard bash wildcard expansion (e.g., per 'set -f') in scripts using 'kvmGet'*
 
 Implementation Details
 ----------------------

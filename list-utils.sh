@@ -115,7 +115,7 @@ function head {
     	done
     	RESULT="$RESULT ]"
     fi
-    echo $RESULT
+    echo "$RESULT"
 }
 
 # get tail of list
@@ -143,7 +143,7 @@ function tail {
     	done
     fi
     shift
-    echo [ $*
+    echo "[ $*"
 }
 
 # list predicate
@@ -220,7 +220,7 @@ function pair {
 }
 
 
-# extract nth (0-indexed) element from a list
+# extract nth (0-offset) element from a list
 # (note: it can deal with arbitrarily deeply nested lists)
 #
 # args:
@@ -241,7 +241,7 @@ function nth {
     else
 	IDX=$(($IDX - 1))
 	local TAIL=`tail $*`
-	nth $IDX $TAIL
+	nth $IDX "$TAIL"
     fi
 }
 

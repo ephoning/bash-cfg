@@ -36,9 +36,23 @@ kvmPut test [ x a ] foo
 kvmPut test [ x b ] bar
 kvmPut test [ x c ] baz
 kvmPut test [ y a ] foobar
-expect "_kvmGetBasic test [ x * ]"    "[ foo bar baz ]"
-expect "_kvmGetBasic test [ * a ]"    "[ foo foobar ]"
-expect "_kvmGetBasic test [ * b ]"    "bar"
+expect "_kvmGetBasic test [ x ? ]"    "[ foo bar baz ]"
+expect "_kvmGetBasic test [ ? a ]"    "[ foo foobar ]"
+expect "_kvmGetBasic test [ ? b ]"    "bar"
+
+expect "kvmGet test [ x ? ]"    "[ foo bar baz ]"
+expect "kvmGet test [ ? a ]"    "[ foo foobar ]"
+expect "kvmGet test [ ? b ]"    "bar"
+
+
+kvmPut test [ v aa x ] foo
+kvmPut test [ v bb x ] bar
+kvmPut test [ v cc x ] baz
+kvmPut test [ w aa x ] foobar
+
+expect "kvmGet test [ v ? ? ]"     "[ foo bar baz ]"
+expect "kvmGet test [ ? aa ? ]"    "[ foo foobar ]"
+expect "kvmGet test [ ? bb ? ]"    "bar"
 
 echo "===== _kvmGetResortToDefault ====="
 expect "_kvmGetResortToDefault test [ a b c ]"    "foo"

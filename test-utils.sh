@@ -22,9 +22,9 @@ FAILED_TEST_COUNT=0
 function expect {
     EXPR="$1"
     EXPECTED_RESULT="$2"
-    set -f  # disable wildcard expansion (i.e., retain '*' in $EXPR)
+    #set -f  # disable wildcard expansion (i.e., retain '*' in $EXPR)
     RESULT=`$EXPR`
-    set +f  # enable wildcard expansion
+    #set +f  # enable wildcard expansion
     if [[ "$RESULT" == "$EXPECTED_RESULT" ]]; then
 	echo "'$EXPR' TEST SUCCEEDED"
 	SUCCEEDED_TEST_COUNT=$(($SUCCEEDED_TEST_COUNT + 1))

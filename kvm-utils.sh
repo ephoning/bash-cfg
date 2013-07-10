@@ -29,13 +29,13 @@ function kvmInit {
 # reference      :== [ @ <key part 1> ... <key part N> ]
 #
 function kvmPut {
-    local ARG_LIST=`list $*`
-    local KV_MAP_NAME=`nth 0 $ARG_LIST`
-    local KEY_PART_LIST=`nth 1 $ARG_LIST`
+    local ARG_LIST=`list "$*"`
+    local KV_MAP_NAME=`nth 0 "$ARG_LIST"`
+    local KEY_PART_LIST=`nth 1 "$ARG_LIST"`
     # note: use composed key to allow for easy retrieval via 'egrep'
     local KEY=`kvmComposeKey $KEY_PART_LIST`
-    local VALUE=`drop 2 $ARG_LIST`
-    VALUE=`unlist $VALUE`
+    local VALUE=`drop 2 "$ARG_LIST"`
+    VALUE=`unlist "$VALUE"`
     echo "$KEY $VALUE" >> $BASE_KV_MAP_NAME.$KV_MAP_NAME
 }
 
@@ -43,24 +43,28 @@ function kvmPut {
 # args: <k-v map name> [ <key part 1> ... <key part N> ]
 #
 function kvmGet {
-    _kvmGetFollowRefs $*  # supports ref following and fall back to defaults
+    set -f
+    local RESULT=`_kvmGetFollowRefs $*`  # supports ref following and fall back to defaults
+    set +f
+    echo $RESULT
 }
+
 
 
 # get value or values (as list) from the key-value map
 # args: <k-v map name> [ <key part 1> ... <key part N> ]
 #
 function _kvmGetBasic {
-    local ARG_LIST=`list $*`
-    local KV_MAP_NAME=`nth 0 $ARG_LIST`
-    local KEY_PART_LIST=`nth 1 $ARG_LIST`
+    local ARG_LIST=`list "$*"`
+    local KV_MAP_NAME=`nth 0 "$ARG_LIST"`
+    local KEY_PART_LIST=`nth 1 "$ARG_LIST"`
     # note: use composed key to allow for easy retrieval via 'egrep'
-    local KEY=`kvmComposeKey $KEY_PART_LIST`
+    local KEY=`kvmComposeKey "$KEY_PART_LIST"`
 
     #echo "key: $KEY ---"
 
     local FOUND=`egrep "^$KEY " $BASE_KV_MAP_NAME.$KV_MAP_NAME`
-    local FOUND_LIST=`list $FOUND`
+    local FOUND_LIST=`list "$FOUND"`
     local KV_PAIR_LIST=`splitIntoPairs $FOUND_LIST`
     local VALUES_LIST=`map [ last @ ] $KV_PAIR_LIST`
 
@@ -134,7 +138,7 @@ function _kvmGetResortToDefault {
 	local VALUE_OR_VALUES=`_kvmGetBasic $KV_MAP_NAME $KEY_PART_LIST`
 	if [ -z "$VALUE_OR_VALUES" ]; then
 	    local TRUNC_KEY_PART_LIST=`$KEY_TRUNC_FUNC $KEY_PART_LIST`
-	    if [[ "`isEmptyList $TRUNC_KEY_PART_LIST`" == "true" ]]; then
+	    if [[ "`isEmptyList "$TRUNC_KEY_PART_LIST"`" == "true" ]]; then
 		echo ""
 	    else
 		_kvmGetTraverseParentKeys $KV_MAP_NAME $KEY_TRUNC_FUNC $TRUNC_KEY_PART_LIST
@@ -153,14 +157,14 @@ function _kvmGetResortToDefault {
 
 # concatenate first 2 args with the provided join string
 function _concatWithWildcardAware {
-    local FIRST=$1
-    local SECOND=$2
-    local JOIN=$3
-    if [[ "$SECOND" == "*" ]]; then
+    local FIRST="$1"
+    local SECOND="$2"
+    local JOIN="$3"
+    if [[ "$SECOND" == "?" ]]; then
 	SECOND="$WILDCARD_REGEX_PATTERN"
     fi
     if [[ "$FIRST" == "%nil%" ]]; then
-	echo $SECOND
+	echo "$SECOND"
     else
 	echo "$FIRST$JOIN$SECOND"
     fi
@@ -192,7 +196,7 @@ function commaSeparate {
 #
 # examples:
 #   kvmComposeKey [ a b c ] -> a-b-c
-#   kvmComposeKey [ a * c ] -> a-[[:alnum:]|_|\.]+-c
+#   kvmComposeKey [ a ? c ] -> a-[[:alnum:]|_|\.]+-c
 #
 function kvmComposeKey {
     function _concatWithDash {
